@@ -1,0 +1,447 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Metadata:
+  License: Apache-2.0
+
+Description:  >-
+  Deploys an Amazon Linux 2023 EC2 instance which hosts
+  Flowise on port 3000. Estimated deployment time: 7 minutes.
+
+# -------------------------------------------------------------------
+# Custom input values for this template
+# -------------------------------------------------------------------
+Parameters:
+
+  LatestAmiId:
+    Description: The Amazon EC2 Linux OS  
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'    
+    Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
+
+  InstanceType:
+    Description: The Amazon EC2 instance type
+    Type: String
+    Default: t3.small
+    AllowedValues:
+      - t3.small     
+      - t3.medium
+      - t3.large
+
+  DynamoDBTableName:
+    Description: The Dynamo DB table name
+    Type: String
+    Default: "SessionTable"
+
+  PostgresDBName:
+    Description: The Amazon RDS Postgres vector database name
+    Type: String
+    Default: flowisedb
+
+  PostgresDBUsername:
+    Description: The Amazon RDS Postgres vector database admin account username
+    Type: String 
+    MinLength: 1
+    MaxLength: 16
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+    Default: "postgres"    
+
+  PostgresDBPassword:
+    Description: The Amazon RDS Postgres vector database admin account password
+    Type: String
+    MinLength: 8
+    MaxLength: 41
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: Must contain only alphanumeric characters.
+    Default: "dbD3m0Cr3d50nlyCHANGEME"
+
+  WebAppUsername:
+    Description: The username for the React frontend web application
+    Type: String
+    Default: flowiseui
+
+  WebAppPassword:
+    Description: The password for the React frontend web application
+    Type: String
+    Default: "uiD3m0Cr3d50nlyCHANGEME"
+
+# -------------------------------------------------------------------
+# Declares the AWS resources that you want to include in the stack
+# -------------------------------------------------------------------
+Resources:
+
+# Create a nondefault VPC to contain our resources based on CIDR
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default      
+
+# Allows communication between your VPC and the internet
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+# Attach the internet gateway to the VPC
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn: InternetGateway
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+# Define the nondefault public subnets - a public subnet is a
+# subnet that is associated with a route table that has a route
+# to an Internet gateway.
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]      
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]      
+      CidrBlock: 10.0.3.0/24
+      MapPublicIpOnLaunch: true      
+
+# Define private subnets for the database tier
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.4.0/24
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+
+# Define a public route table, which is a set of rules, called
+# routes, that determine where network traffic from your subnet
+# or gateway is directed
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+
+# Add a route in the PublicRouteTable to the InternetGateway
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: PublicRouteTable
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+# Associates a subnet with a route table.
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn: PublicRoute
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+# Define a private route table
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+# Associates a subnet with a route table.
+  PrivateSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref PrivateSubnet1
+
+# Associates a subnet with a route table.
+# The second subnet is required for RDS Multi-AZ support even if we are using a Single-AZ
+  PrivateSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref PrivateSubnet2              
+
+# Define a Security Group for the EC2 instance
+# A security group acts as a virtual, stateful firewall
+  EC2InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: Flowise Ingress
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0      
+
+# Define an IAM role for the EC2 Instance with SSM Managed Policy
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 
+        !Sub
+          - 'flowise-ec2-${RandomGUID}'
+          - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy        
+
+# Allows an EC2 instance to access other AWS services and resource
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles: 
+       - !Ref EC2Role        
+
+# The EC2 instance used for hosting the app
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    DependsOn: [EC2InstanceProfile, EC2Role, AmazonBedrockUserAccessKey]
+    CreationPolicy: 
+      ResourceSignal:
+        Timeout: PT15M
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      SubnetId: !Ref PublicSubnet1      
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      SecurityGroupIds:
+        - !GetAtt EC2InstanceSecurityGroup.GroupId  
+      Tags:
+        - Key: Name
+          Value:
+            !Sub
+              - 'flowise-${RandomGUID}'
+              - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
+      UserData:
+        Fn::Base64: !Sub 
+          - |        
+            #!/bin/bash -xe
+            yum update -y
+            curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
+            dnf install nodejs -y
+            npm install -g flowise
+            
+            # Create Linux service for Flowise
+            cat <<EOF > /etc/systemd/system/flowise_svc.service          
+            [Unit]
+            Description=FlowiseAI
+
+            [Service]
+            Type=simple
+            ExecStart=npx flowise start --PORT=3000 --DEBUG=true --LOG_LEVEL=debug --FLOWISE_USERNAME=${webAppUsername} --FLOWISE_PASSWORD=${webAppPassword}
+
+            [Install]
+            WantedBy=multi-user.target
+            EOF
+
+            # Start the Flowise service
+            systemctl enable flowise_svc
+            systemctl start flowise_svc
+            sleep 30
+
+            # Create Flowise credentials for AWS services
+            if systemctl is-active --quiet flowise_svc; then
+
+              echo "Flowise service started"
+              echo "Adding resource credentials"
+            
+              curl -X POST -u ${webAppUsername}:${webAppPassword} http://localhost:3000/api/v1/credentials \
+              -H 'Content-Type: application/json' \
+              -d '{"name":"amazon-bedrock","credentialName":"awsApi","plainDataObj":{"awsKey":"${awsKeyVal}","awsSecret":"${awsSecretVal}"}}'
+
+              curl -X POST -u ${webAppUsername}:${webAppPassword} http://localhost:3000/api/v1/credentials \
+              -H 'Content-Type: application/json' \
+              -d '{"name":"amazon-dynamodb","credentialName":"dynamodbMemoryApi","plainDataObj":{"accessKey":"${awsKeyVal}","secretAccessKey":"${awsSecretVal}"}}'
+
+              curl -X POST -u ${webAppUsername}:${webAppPassword} http://localhost:3000/api/v1/credentials \
+              -H 'Content-Type: application/json' \
+              -d '{"name":"amazon-rds-postgres","credentialName":"PostgresApi","plainDataObj":{"user":"${awsRdsPgUser}","password":"${awsRdsPgPass}"}}'
+
+            else
+              echo "Flowise service NOT started"
+            fi
+
+            # Signal successful completion to CloudFormation
+            cfn-signal -e $? --stack ${AWS::StackId} --resource EC2Instance --region ${AWS::Region}
+          - {awsKeyVal: !Ref AmazonBedrockUserAccessKey, awsSecretVal: !GetAtt AmazonBedrockUserAccessKey.SecretAccessKey, awsRdsPgUser: !Ref PostgresDBUsername, awsRdsPgPass: !Ref PostgresDBPassword, webAppUsername: !Ref WebAppUsername, webAppPassword: !Ref WebAppPassword}
+
+# Create a DynamoDB table to maintain conversational chat history
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    Properties:
+      TableName: !Ref DynamoDBTableName
+      AttributeDefinitions:
+        - AttributeName: SessionId
+          AttributeType: S        
+      KeySchema:
+        - AttributeName: SessionId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+# Create an IAM User with permissions for Bedrock and Dynamodb
+  AmazonBedrockUser:
+    Type: AWS::IAM::User
+    DeletionPolicy: Delete
+    Properties:
+      UserName:
+        !Sub
+          - 'flowise-${RandomGUID}'
+          - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }      
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonBedrockFullAccess"
+      Policies:
+        - PolicyName: DynamoDBSessionTableAccess
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource: !Sub 
+                  - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}
+                  - { TableName: !Ref DynamoDBTableName }
+
+# Create IAM access key for AmazonBedrockUser
+  AmazonBedrockUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref AmazonBedrockUser
+
+# Create RDS DB subnet group
+  DBSubnetGroup:  
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for RDS instance
+      SubnetIds: 
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2        
+
+# Create RDS DB security group with ingress from the EC2 Security Group
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for RDS Postgres
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref EC2InstanceSecurityGroup
+
+# Remove after the upcoming merge, build and release of #1667. https://github.com/FlowiseAI/Flowise/pull/1677
+# Postgres v15 and higher force SSL, which is not working with the current Flowise Postgres vector node
+  
+# Creates a custom parameter group for an RDS database
+  DBParameterGroup:
+   Type: AWS::RDS::DBParameterGroup
+   Properties:
+     Description: Parameter group for Flowise Postgres database
+     Family: postgres16
+     Parameters:
+       rds.force_ssl: 0
+
+# Creates an Amazon RDS Postgres v16.1 database
+  RDSPostgresInstance:
+    Type: AWS::RDS::DBInstance
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete    
+    Properties:
+      DBInstanceIdentifier: 
+        !Sub
+          - 'flowisedemodbinstance-${RandomGUID}'
+          - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
+      DBName: !Ref PostgresDBName
+      Engine: postgres
+      EngineVersion: 16.1
+      DBInstanceClass: db.t4g.micro
+      AllocatedStorage: 20
+      MasterUsername: !Ref PostgresDBUsername
+      MasterUserPassword: !Ref PostgresDBPassword
+      MultiAZ: false
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DBSecurityGroup
+      DBParameterGroupName: !Ref DBParameterGroup
+
+# -------------------------------------------------------------------
+# Displays outputs that were declared in the this template
+# -------------------------------------------------------------------
+Outputs:
+
+  FlowiseUrl:
+    Description: Amazon EC2 host endpoint for Flowise
+    Value: !Sub "http://${EC2Instance.PublicDnsName}:3000"
+
+  FlowiseWebUser:
+    Description: The username for the React frontend web application
+    Value: !Ref WebAppUsername
+
+  FlowiseWebPassword:
+    Description: The password for the React frontend web application
+    Value: !Ref WebAppPassword    
+
+  StackRegion:
+    Description: Region in which the stack resources are being created  
+    Value: !Ref "AWS::Region"    
+
+  #BedrockAccessKey:
+  #  Description: Amazon Bedrock user Access Key
+  #  Value: !Ref AmazonBedrockUserAccessKey
+  
+  #BedrockSecretAccessKey:
+  #  Description: Amazon Bedrock user Secret Access Key
+  #  Value: !GetAtt AmazonBedrockUserAccessKey.SecretAccessKey    
+
+  DynamoDBTable:
+    Description: DynamoDB table name
+    Value: !Ref DynamoDBTableName
+
+  PostgresHostEndpoint:
+    Description: Amazon RDS Postgres vector db host endpoint
+    Value: !GetAtt RDSPostgresInstance.Endpoint.Address
+
+  PostgresDatabaseName:
+    Description: Amazon RDS Postgres vector db name 
+    Value: !Ref PostgresDBName
+
+  PostgresDatabasePort:
+    Description: Amazon RDS Postgres vector db host port 
+    Value: !GetAtt RDSPostgresInstance.Endpoint.Port
+
+  PostgresDatabaseUsername:
+    Description: The Amazon RDS Postgres vector database admin account username
+    Value: !Ref PostgresDBUsername
+
+  PostgresDatabasePassword:
+    Description: The Amazon RDS Postgres vector database admin account password
+    Value: !Ref PostgresDBPassword  
