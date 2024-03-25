@@ -1,0 +1,1021 @@
+{
+  "nodes": [
+    {
+      "width": 300,
+      "height": 490,
+      "id": "pdfFile_0",
+      "position": {
+        "x": 623.8116868259339,
+        "y": -254.75870079094605
+      },
+      "type": "customNode",
+      "data": {
+        "id": "pdfFile_0",
+        "label": "Pdf File",
+        "version": 1,
+        "name": "pdfFile",
+        "type": "Document",
+        "baseClasses": [
+          "Document"
+        ],
+        "category": "Document Loaders",
+        "description": "Load data from PDF files",
+        "inputParams": [
+          {
+            "label": "Pdf File",
+            "name": "pdfFile",
+            "type": "file",
+            "fileType": ".pdf",
+            "id": "pdfFile_0-input-pdfFile-file"
+          },
+          {
+            "label": "Usage",
+            "name": "usage",
+            "type": "options",
+            "options": [
+              {
+                "label": "One document per page",
+                "name": "perPage"
+              },
+              {
+                "label": "One document per file",
+                "name": "perFile"
+              }
+            ],
+            "default": "perPage",
+            "id": "pdfFile_0-input-usage-options"
+          },
+          {
+            "label": "Use Legacy Build",
+            "name": "legacyBuild",
+            "type": "boolean",
+            "optional": true,
+            "additionalParams": true,
+            "id": "pdfFile_0-input-legacyBuild-boolean"
+          },
+          {
+            "label": "Metadata",
+            "name": "metadata",
+            "type": "json",
+            "optional": true,
+            "additionalParams": true,
+            "id": "pdfFile_0-input-metadata-json"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Text Splitter",
+            "name": "textSplitter",
+            "type": "TextSplitter",
+            "optional": true,
+            "id": "pdfFile_0-input-textSplitter-TextSplitter"
+          }
+        ],
+        "inputs": {
+          "textSplitter": "{{recursiveCharacterTextSplitter_0.data.instance}}",
+          "usage": "perPage",
+          "legacyBuild": "",
+          "metadata": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "pdfFile_0-output-pdfFile-Document",
+            "name": "pdfFile",
+            "label": "Document",
+            "type": "Document"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 623.8116868259339,
+        "y": -254.75870079094605
+      },
+      "dragging": false
+    },
+    {
+      "width": 300,
+      "height": 568,
+      "id": "AWSBedrockEmbeddings_0",
+      "position": {
+        "x": 618.8079725715861,
+        "y": 338.0096024658576
+      },
+      "type": "customNode",
+      "data": {
+        "id": "AWSBedrockEmbeddings_0",
+        "label": "AWS Bedrock Embeddings",
+        "version": 3,
+        "name": "AWSBedrockEmbeddings",
+        "type": "AWSBedrockEmbeddings",
+        "baseClasses": [
+          "AWSBedrockEmbeddings",
+          "Embeddings"
+        ],
+        "category": "Embeddings",
+        "description": "AWSBedrock embedding models to generate embeddings for a given text",
+        "inputParams": [
+          {
+            "label": "AWS Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "awsApi"
+            ],
+            "optional": true,
+            "id": "AWSBedrockEmbeddings_0-input-credential-credential"
+          },
+          {
+            "label": "Region",
+            "name": "region",
+            "type": "options",
+            "options": [
+              {
+                "label": "af-south-1",
+                "name": "af-south-1"
+              },
+              {
+                "label": "ap-east-1",
+                "name": "ap-east-1"
+              },
+              {
+                "label": "ap-northeast-1",
+                "name": "ap-northeast-1"
+              },
+              {
+                "label": "ap-northeast-2",
+                "name": "ap-northeast-2"
+              },
+              {
+                "label": "ap-northeast-3",
+                "name": "ap-northeast-3"
+              },
+              {
+                "label": "ap-south-1",
+                "name": "ap-south-1"
+              },
+              {
+                "label": "ap-south-2",
+                "name": "ap-south-2"
+              },
+              {
+                "label": "ap-southeast-1",
+                "name": "ap-southeast-1"
+              },
+              {
+                "label": "ap-southeast-2",
+                "name": "ap-southeast-2"
+              },
+              {
+                "label": "ap-southeast-3",
+                "name": "ap-southeast-3"
+              },
+              {
+                "label": "ap-southeast-4",
+                "name": "ap-southeast-4"
+              },
+              {
+                "label": "ap-southeast-5",
+                "name": "ap-southeast-5"
+              },
+              {
+                "label": "ap-southeast-6",
+                "name": "ap-southeast-6"
+              },
+              {
+                "label": "ca-central-1",
+                "name": "ca-central-1"
+              },
+              {
+                "label": "ca-west-1",
+                "name": "ca-west-1"
+              },
+              {
+                "label": "cn-north-1",
+                "name": "cn-north-1"
+              },
+              {
+                "label": "cn-northwest-1",
+                "name": "cn-northwest-1"
+              },
+              {
+                "label": "eu-central-1",
+                "name": "eu-central-1"
+              },
+              {
+                "label": "eu-central-2",
+                "name": "eu-central-2"
+              },
+              {
+                "label": "eu-north-1",
+                "name": "eu-north-1"
+              },
+              {
+                "label": "eu-south-1",
+                "name": "eu-south-1"
+              },
+              {
+                "label": "eu-south-2",
+                "name": "eu-south-2"
+              },
+              {
+                "label": "eu-west-1",
+                "name": "eu-west-1"
+              },
+              {
+                "label": "eu-west-2",
+                "name": "eu-west-2"
+              },
+              {
+                "label": "eu-west-3",
+                "name": "eu-west-3"
+              },
+              {
+                "label": "il-central-1",
+                "name": "il-central-1"
+              },
+              {
+                "label": "me-central-1",
+                "name": "me-central-1"
+              },
+              {
+                "label": "me-south-1",
+                "name": "me-south-1"
+              },
+              {
+                "label": "sa-east-1",
+                "name": "sa-east-1"
+              },
+              {
+                "label": "us-east-1",
+                "name": "us-east-1"
+              },
+              {
+                "label": "us-east-2",
+                "name": "us-east-2"
+              },
+              {
+                "label": "us-gov-east-1",
+                "name": "us-gov-east-1"
+              },
+              {
+                "label": "us-gov-west-1",
+                "name": "us-gov-west-1"
+              },
+              {
+                "label": "us-west-1",
+                "name": "us-west-1"
+              },
+              {
+                "label": "us-west-2",
+                "name": "us-west-2"
+              }
+            ],
+            "default": "us-east-1",
+            "id": "AWSBedrockEmbeddings_0-input-region-options"
+          },
+          {
+            "label": "Model Name",
+            "name": "model",
+            "type": "options",
+            "options": [
+              {
+                "label": "amazon.titan-embed-text-v1",
+                "name": "amazon.titan-embed-text-v1"
+              },
+              {
+                "label": "amazon.titan-embed-g1-text-02",
+                "name": "amazon.titan-embed-g1-text-02"
+              },
+              {
+                "label": "cohere.embed-english-v3",
+                "name": "cohere.embed-english-v3"
+              },
+              {
+                "label": "cohere.embed-multilingual-v3",
+                "name": "cohere.embed-multilingual-v3"
+              }
+            ],
+            "default": "amazon.titan-embed-text-v1",
+            "id": "AWSBedrockEmbeddings_0-input-model-options"
+          },
+          {
+            "label": "Custom Model Name",
+            "name": "customModel",
+            "description": "If provided, will override model selected from Model Name option",
+            "type": "string",
+            "optional": true,
+            "id": "AWSBedrockEmbeddings_0-input-customModel-string"
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "region": "us-east-1",
+          "model": "amazon.titan-embed-text-v1",
+          "customModel": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "AWSBedrockEmbeddings_0-output-AWSBedrockEmbeddings-AWSBedrockEmbeddings|Embeddings",
+            "name": "AWSBedrockEmbeddings",
+            "label": "AWSBedrockEmbeddings",
+            "type": "AWSBedrockEmbeddings | Embeddings"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 618.8079725715861,
+        "y": 338.0096024658576
+      },
+      "dragging": false
+    },
+    {
+      "width": 300,
+      "height": 430,
+      "id": "recursiveCharacterTextSplitter_0",
+      "position": {
+        "x": 179.34618503020192,
+        "y": -251.98147494091052
+      },
+      "type": "customNode",
+      "data": {
+        "id": "recursiveCharacterTextSplitter_0",
+        "label": "Recursive Character Text Splitter",
+        "version": 2,
+        "name": "recursiveCharacterTextSplitter",
+        "type": "RecursiveCharacterTextSplitter",
+        "baseClasses": [
+          "RecursiveCharacterTextSplitter",
+          "TextSplitter",
+          "BaseDocumentTransformer",
+          "Runnable"
+        ],
+        "category": "Text Splitters",
+        "description": "Split documents recursively by different characters - starting with \"\\n\\n\", then \"\\n\", then \" \"",
+        "inputParams": [
+          {
+            "label": "Chunk Size",
+            "name": "chunkSize",
+            "type": "number",
+            "default": 1000,
+            "optional": true,
+            "id": "recursiveCharacterTextSplitter_0-input-chunkSize-number"
+          },
+          {
+            "label": "Chunk Overlap",
+            "name": "chunkOverlap",
+            "type": "number",
+            "optional": true,
+            "id": "recursiveCharacterTextSplitter_0-input-chunkOverlap-number"
+          },
+          {
+            "label": "Custom Separators",
+            "name": "separators",
+            "type": "string",
+            "rows": 4,
+            "description": "Array of custom separators to determine when to split the text, will override the default separators",
+            "placeholder": "[\"|\", \"##\", \">\", \"-\"]",
+            "additionalParams": true,
+            "optional": true,
+            "id": "recursiveCharacterTextSplitter_0-input-separators-string"
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "chunkSize": 1000,
+          "chunkOverlap": "100",
+          "separators": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "recursiveCharacterTextSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter|BaseDocumentTransformer|Runnable",
+            "name": "recursiveCharacterTextSplitter",
+            "label": "RecursiveCharacterTextSplitter",
+            "type": "RecursiveCharacterTextSplitter | TextSplitter | BaseDocumentTransformer | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 179.34618503020192,
+        "y": -251.98147494091052
+      },
+      "dragging": false
+    },
+    {
+      "id": "postgres_2",
+      "position": {
+        "x": 1100.3132920840674,
+        "y": -157.52762250565695
+      },
+      "type": "customNode",
+      "data": {
+        "id": "postgres_2",
+        "label": "Postgres",
+        "version": 3,
+        "name": "postgres",
+        "type": "Postgres",
+        "baseClasses": [
+          "Postgres",
+          "VectorStoreRetriever",
+          "BaseRetriever"
+        ],
+        "category": "Vector Stores",
+        "description": "Upsert embedded data and perform similarity search upon query using pgvector on Postgres",
+        "inputParams": [
+          {
+            "label": "Connect Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "PostgresApi"
+            ],
+            "id": "postgres_2-input-credential-credential"
+          },
+          {
+            "label": "Host",
+            "name": "host",
+            "type": "string",
+            "id": "postgres_2-input-host-string"
+          },
+          {
+            "label": "Database",
+            "name": "database",
+            "type": "string",
+            "id": "postgres_2-input-database-string"
+          },
+          {
+            "label": "Port",
+            "name": "port",
+            "type": "number",
+            "placeholder": "6432",
+            "optional": true,
+            "id": "postgres_2-input-port-number"
+          },
+          {
+            "label": "Table Name",
+            "name": "tableName",
+            "type": "string",
+            "placeholder": "documents",
+            "additionalParams": true,
+            "optional": true,
+            "id": "postgres_2-input-tableName-string"
+          },
+          {
+            "label": "Additional Configuration",
+            "name": "additionalConfig",
+            "type": "json",
+            "additionalParams": true,
+            "optional": true,
+            "id": "postgres_2-input-additionalConfig-json"
+          },
+          {
+            "label": "Top K",
+            "name": "topK",
+            "description": "Number of top results to fetch. Default to 4",
+            "placeholder": "4",
+            "type": "number",
+            "additionalParams": true,
+            "optional": true,
+            "id": "postgres_2-input-topK-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Document",
+            "name": "document",
+            "type": "Document",
+            "list": true,
+            "optional": true,
+            "id": "postgres_2-input-document-Document"
+          },
+          {
+            "label": "Embeddings",
+            "name": "embeddings",
+            "type": "Embeddings",
+            "id": "postgres_2-input-embeddings-Embeddings"
+          }
+        ],
+        "inputs": {
+          "document": [
+            "{{pdfFile_0.data.instance}}"
+          ],
+          "embeddings": "{{AWSBedrockEmbeddings_0.data.instance}}",
+          "host": "",
+          "database": "flowisedb",
+          "port": "5432",
+          "tableName": "",
+          "additionalConfig": "",
+          "topK": ""
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "description": "",
+            "options": [
+              {
+                "id": "postgres_2-output-retriever-Postgres|VectorStoreRetriever|BaseRetriever",
+                "name": "retriever",
+                "label": "Postgres Retriever",
+                "description": "",
+                "type": "Postgres | VectorStoreRetriever | BaseRetriever"
+              },
+              {
+                "id": "postgres_2-output-vectorStore-Postgres|VectorStore",
+                "name": "vectorStore",
+                "label": "Postgres Vector Store",
+                "description": "",
+                "type": "Postgres | VectorStore"
+              }
+            ],
+            "default": "retriever"
+          }
+        ],
+        "outputs": {
+          "output": "retriever"
+        },
+        "selected": false
+      },
+      "width": 300,
+      "height": 755,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1100.3132920840674,
+        "y": -157.52762250565695
+      },
+      "dragging": false
+    },
+    {
+      "id": "awsChatBedrock_1",
+      "position": {
+        "x": 1522.738733117231,
+        "y": -236.02795588539442
+      },
+      "type": "customNode",
+      "data": {
+        "id": "awsChatBedrock_1",
+        "label": "AWS ChatBedrock",
+        "version": 4,
+        "name": "awsChatBedrock",
+        "type": "AWSChatBedrock",
+        "baseClasses": [
+          "AWSChatBedrock",
+          "BedrockChat",
+          "BedrockChat",
+          "BaseChatModel",
+          "BaseLanguageModel",
+          "Runnable"
+        ],
+        "category": "Chat Models",
+        "description": "Wrapper around AWS Bedrock large language models that use the Chat endpoint",
+        "inputParams": [
+          {
+            "label": "AWS Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "awsApi"
+            ],
+            "optional": true,
+            "id": "awsChatBedrock_1-input-credential-credential"
+          },
+          {
+            "label": "Region",
+            "name": "region",
+            "type": "options",
+            "options": [
+              {
+                "label": "af-south-1",
+                "name": "af-south-1"
+              },
+              {
+                "label": "ap-east-1",
+                "name": "ap-east-1"
+              },
+              {
+                "label": "ap-northeast-1",
+                "name": "ap-northeast-1"
+              },
+              {
+                "label": "ap-northeast-2",
+                "name": "ap-northeast-2"
+              },
+              {
+                "label": "ap-northeast-3",
+                "name": "ap-northeast-3"
+              },
+              {
+                "label": "ap-south-1",
+                "name": "ap-south-1"
+              },
+              {
+                "label": "ap-south-2",
+                "name": "ap-south-2"
+              },
+              {
+                "label": "ap-southeast-1",
+                "name": "ap-southeast-1"
+              },
+              {
+                "label": "ap-southeast-2",
+                "name": "ap-southeast-2"
+              },
+              {
+                "label": "ap-southeast-3",
+                "name": "ap-southeast-3"
+              },
+              {
+                "label": "ap-southeast-4",
+                "name": "ap-southeast-4"
+              },
+              {
+                "label": "ap-southeast-5",
+                "name": "ap-southeast-5"
+              },
+              {
+                "label": "ap-southeast-6",
+                "name": "ap-southeast-6"
+              },
+              {
+                "label": "ca-central-1",
+                "name": "ca-central-1"
+              },
+              {
+                "label": "ca-west-1",
+                "name": "ca-west-1"
+              },
+              {
+                "label": "cn-north-1",
+                "name": "cn-north-1"
+              },
+              {
+                "label": "cn-northwest-1",
+                "name": "cn-northwest-1"
+              },
+              {
+                "label": "eu-central-1",
+                "name": "eu-central-1"
+              },
+              {
+                "label": "eu-central-2",
+                "name": "eu-central-2"
+              },
+              {
+                "label": "eu-north-1",
+                "name": "eu-north-1"
+              },
+              {
+                "label": "eu-south-1",
+                "name": "eu-south-1"
+              },
+              {
+                "label": "eu-south-2",
+                "name": "eu-south-2"
+              },
+              {
+                "label": "eu-west-1",
+                "name": "eu-west-1"
+              },
+              {
+                "label": "eu-west-2",
+                "name": "eu-west-2"
+              },
+              {
+                "label": "eu-west-3",
+                "name": "eu-west-3"
+              },
+              {
+                "label": "il-central-1",
+                "name": "il-central-1"
+              },
+              {
+                "label": "me-central-1",
+                "name": "me-central-1"
+              },
+              {
+                "label": "me-south-1",
+                "name": "me-south-1"
+              },
+              {
+                "label": "sa-east-1",
+                "name": "sa-east-1"
+              },
+              {
+                "label": "us-east-1",
+                "name": "us-east-1"
+              },
+              {
+                "label": "us-east-2",
+                "name": "us-east-2"
+              },
+              {
+                "label": "us-gov-east-1",
+                "name": "us-gov-east-1"
+              },
+              {
+                "label": "us-gov-west-1",
+                "name": "us-gov-west-1"
+              },
+              {
+                "label": "us-west-1",
+                "name": "us-west-1"
+              },
+              {
+                "label": "us-west-2",
+                "name": "us-west-2"
+              }
+            ],
+            "default": "us-east-1",
+            "id": "awsChatBedrock_1-input-region-options"
+          },
+          {
+            "label": "Model Name",
+            "name": "model",
+            "type": "options",
+            "options": [
+              {
+                "label": "anthropic.claude-3-haiku",
+                "name": "anthropic.claude-3-haiku-20240307-v1:0"
+              },
+              {
+                "label": "anthropic.claude-3-sonnet",
+                "name": "anthropic.claude-3-sonnet-20240229-v1:0"
+              },
+              {
+                "label": "anthropic.claude-instant-v1",
+                "name": "anthropic.claude-instant-v1"
+              },
+              {
+                "label": "anthropic.claude-v2:1",
+                "name": "anthropic.claude-v2:1"
+              },
+              {
+                "label": "anthropic.claude-v2",
+                "name": "anthropic.claude-v2"
+              },
+              {
+                "label": "meta.llama2-13b-chat-v1",
+                "name": "meta.llama2-13b-chat-v1"
+              },
+              {
+                "label": "meta.llama2-70b-chat-v1",
+                "name": "meta.llama2-70b-chat-v1"
+              },
+              {
+                "label": "mistral.mistral-7b-instruct-v0:2",
+                "name": "mistral.mistral-7b-instruct-v0:2"
+              },
+              {
+                "label": "mistral.mixtral-8x7b-instruct-v0:1",
+                "name": "mistral.mixtral-8x7b-instruct-v0:1"
+              }
+            ],
+            "default": "anthropic.claude-3-haiku",
+            "id": "awsChatBedrock_1-input-model-options"
+          },
+          {
+            "label": "Custom Model Name",
+            "name": "customModel",
+            "description": "If provided, will override model selected from Model Name option",
+            "type": "string",
+            "optional": true,
+            "id": "awsChatBedrock_1-input-customModel-string"
+          },
+          {
+            "label": "Temperature",
+            "name": "temperature",
+            "type": "number",
+            "step": 0.1,
+            "description": "Temperature parameter may not apply to certain model. Please check available model parameters",
+            "optional": true,
+            "additionalParams": true,
+            "default": 0.7,
+            "id": "awsChatBedrock_1-input-temperature-number"
+          },
+          {
+            "label": "Max Tokens to Sample",
+            "name": "max_tokens_to_sample",
+            "type": "number",
+            "step": 10,
+            "description": "Max Tokens parameter may not apply to certain model. Please check available model parameters",
+            "optional": true,
+            "additionalParams": true,
+            "default": 200,
+            "id": "awsChatBedrock_1-input-max_tokens_to_sample-number"
+          },
+          {
+            "label": "Allow Image Uploads",
+            "name": "allowImageUploads",
+            "type": "boolean",
+            "description": "Only works with claude-3-* models when image is being uploaded from chat. Compatible with LLMChain, Conversation Chain, ReAct Agent, and Conversational Agent",
+            "default": false,
+            "optional": true,
+            "id": "awsChatBedrock_1-input-allowImageUploads-boolean"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Cache",
+            "name": "cache",
+            "type": "BaseCache",
+            "optional": true,
+            "id": "awsChatBedrock_1-input-cache-BaseCache"
+          }
+        ],
+        "inputs": {
+          "cache": "",
+          "region": "us-east-1",
+          "model": "anthropic.claude-3-haiku-20240307-v1:0",
+          "customModel": "",
+          "temperature": "0.1",
+          "max_tokens_to_sample": "2000",
+          "allowImageUploads": true
+        },
+        "outputAnchors": [
+          {
+            "id": "awsChatBedrock_1-output-awsChatBedrock-AWSChatBedrock|BedrockChat|BedrockChat|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "awsChatBedrock",
+            "label": "AWSChatBedrock",
+            "description": "Wrapper around AWS Bedrock large language models that use the Chat endpoint",
+            "type": "AWSChatBedrock | BedrockChat | BedrockChat | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 768,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1522.738733117231,
+        "y": -236.02795588539442
+      }
+    },
+    {
+      "id": "conversationalRetrievalQAChain_2",
+      "position": {
+        "x": 1969.4190891848943,
+        "y": 388.95613218202584
+      },
+      "type": "customNode",
+      "data": {
+        "id": "conversationalRetrievalQAChain_2",
+        "label": "Conversational Retrieval QA Chain",
+        "version": 3,
+        "name": "conversationalRetrievalQAChain",
+        "type": "ConversationalRetrievalQAChain",
+        "baseClasses": [
+          "ConversationalRetrievalQAChain",
+          "BaseChain",
+          "Runnable"
+        ],
+        "category": "Chains",
+        "description": "Document QA - built on RetrievalQAChain to provide a chat history component",
+        "inputParams": [
+          {
+            "label": "Return Source Documents",
+            "name": "returnSourceDocuments",
+            "type": "boolean",
+            "optional": true,
+            "id": "conversationalRetrievalQAChain_2-input-returnSourceDocuments-boolean"
+          },
+          {
+            "label": "Rephrase Prompt",
+            "name": "rephrasePrompt",
+            "type": "string",
+            "description": "Using previous chat history, rephrase question into a standalone question",
+            "warning": "Prompt must include input variables: {chat_history} and {question}",
+            "rows": 4,
+            "additionalParams": true,
+            "optional": true,
+            "default": "Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\nChat History:\n{chat_history}\nFollow Up Input: {question}\nStandalone Question:",
+            "id": "conversationalRetrievalQAChain_2-input-rephrasePrompt-string"
+          },
+          {
+            "label": "Response Prompt",
+            "name": "responsePrompt",
+            "type": "string",
+            "description": "Taking the rephrased question, search for answer from the provided context",
+            "warning": "Prompt must include input variable: {context}",
+            "rows": 4,
+            "additionalParams": true,
+            "optional": true,
+            "default": "I want you to act as a document that I am having a conversation with. Your name is \"AI Assistant\". Using the provided context, answer the user's question to the best of your ability using the resources provided.\nIf there is nothing in the context relevant to the question at hand, just say \"Hmm, I'm not sure\" and stop after that. Refuse to answer any question not about the info. Never break character.\n------------\n{context}\n------------\nREMEMBER: If there is no relevant information within the context, just say \"Hmm, I'm not sure\". Don't try to make up an answer. Never break character.",
+            "id": "conversationalRetrievalQAChain_2-input-responsePrompt-string"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "id": "conversationalRetrievalQAChain_2-input-model-BaseChatModel"
+          },
+          {
+            "label": "Vector Store Retriever",
+            "name": "vectorStoreRetriever",
+            "type": "BaseRetriever",
+            "id": "conversationalRetrievalQAChain_2-input-vectorStoreRetriever-BaseRetriever"
+          },
+          {
+            "label": "Memory",
+            "name": "memory",
+            "type": "BaseMemory",
+            "optional": true,
+            "description": "If left empty, a default BufferMemory will be used",
+            "id": "conversationalRetrievalQAChain_2-input-memory-BaseMemory"
+          },
+          {
+            "label": "Input Moderation",
+            "description": "Detect text that could generate harmful output and prevent it from being sent to the language model",
+            "name": "inputModeration",
+            "type": "Moderation",
+            "optional": true,
+            "list": true,
+            "id": "conversationalRetrievalQAChain_2-input-inputModeration-Moderation"
+          }
+        ],
+        "inputs": {
+          "model": "{{awsChatBedrock_1.data.instance}}",
+          "vectorStoreRetriever": "{{postgres_2.data.instance}}",
+          "memory": "",
+          "returnSourceDocuments": "",
+          "rephrasePrompt": "Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\nChat History:\n{chat_history}\nFollow Up Input: {question}\nStandalone Question:",
+          "responsePrompt": "I want you to act as a document that I am having a conversation with. Your name is \"AI Assistant\". Using the provided context, answer the user's question to the best of your ability using the resources provided.\nIf there is nothing in the context relevant to the question at hand, just say \"Hmm, I'm not sure\" and stop after that. Refuse to answer any question not about the info. Never break character.\n------------\n{context}\n------------\nREMEMBER: If there is no relevant information within the context, just say \"Hmm, I'm not sure\". Don't try to make up an answer. Never break character.",
+          "inputModeration": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "conversationalRetrievalQAChain_2-output-conversationalRetrievalQAChain-ConversationalRetrievalQAChain|BaseChain|Runnable",
+            "name": "conversationalRetrievalQAChain",
+            "label": "ConversationalRetrievalQAChain",
+            "description": "Document QA - built on RetrievalQAChain to provide a chat history component",
+            "type": "ConversationalRetrievalQAChain | BaseChain | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 532,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1969.4190891848943,
+        "y": 388.95613218202584
+      },
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "recursiveCharacterTextSplitter_0",
+      "sourceHandle": "recursiveCharacterTextSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter|BaseDocumentTransformer|Runnable",
+      "target": "pdfFile_0",
+      "targetHandle": "pdfFile_0-input-textSplitter-TextSplitter",
+      "type": "buttonedge",
+      "id": "recursiveCharacterTextSplitter_0-recursiveCharacterTextSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter|BaseDocumentTransformer|Runnable-pdfFile_0-pdfFile_0-input-textSplitter-TextSplitter"
+    },
+    {
+      "source": "pdfFile_0",
+      "sourceHandle": "pdfFile_0-output-pdfFile-Document",
+      "target": "postgres_2",
+      "targetHandle": "postgres_2-input-document-Document",
+      "type": "buttonedge",
+      "id": "pdfFile_0-pdfFile_0-output-pdfFile-Document-postgres_2-postgres_2-input-document-Document"
+    },
+    {
+      "source": "AWSBedrockEmbeddings_0",
+      "sourceHandle": "AWSBedrockEmbeddings_0-output-AWSBedrockEmbeddings-AWSBedrockEmbeddings|Embeddings",
+      "target": "postgres_2",
+      "targetHandle": "postgres_2-input-embeddings-Embeddings",
+      "type": "buttonedge",
+      "id": "AWSBedrockEmbeddings_0-AWSBedrockEmbeddings_0-output-AWSBedrockEmbeddings-AWSBedrockEmbeddings|Embeddings-postgres_2-postgres_2-input-embeddings-Embeddings"
+    },
+    {
+      "source": "awsChatBedrock_1",
+      "sourceHandle": "awsChatBedrock_1-output-awsChatBedrock-AWSChatBedrock|BedrockChat|BedrockChat|BaseChatModel|BaseLanguageModel|Runnable",
+      "target": "conversationalRetrievalQAChain_2",
+      "targetHandle": "conversationalRetrievalQAChain_2-input-model-BaseChatModel",
+      "type": "buttonedge",
+      "id": "awsChatBedrock_1-awsChatBedrock_1-output-awsChatBedrock-AWSChatBedrock|BedrockChat|BedrockChat|BaseChatModel|BaseLanguageModel|Runnable-conversationalRetrievalQAChain_2-conversationalRetrievalQAChain_2-input-model-BaseChatModel"
+    },
+    {
+      "source": "postgres_2",
+      "sourceHandle": "postgres_2-output-retriever-Postgres|VectorStoreRetriever|BaseRetriever",
+      "target": "conversationalRetrievalQAChain_2",
+      "targetHandle": "conversationalRetrievalQAChain_2-input-vectorStoreRetriever-BaseRetriever",
+      "type": "buttonedge",
+      "id": "postgres_2-postgres_2-output-retriever-Postgres|VectorStoreRetriever|BaseRetriever-conversationalRetrievalQAChain_2-conversationalRetrievalQAChain_2-input-vectorStoreRetriever-BaseRetriever"
+    }
+  ]
+}
